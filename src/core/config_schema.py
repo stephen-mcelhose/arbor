@@ -144,6 +144,7 @@ class LLMConfig(BaseModel):
     model: str = "claude-sonnet-4-20250514"
     api_key: str | None = None
     base_url: str | None = None  # for OpenAI-compatible endpoints
+    agent_cmd: str | None = None  # BYOA: command to run for provider=process
     openai_api: str = "responses"  # legacy second axis for provider=openai
     reasoning_effort: str | None = "high"  # low|medium|high (Claude maps to budget)
     reasoning_summary: str | None = "auto"
@@ -281,6 +282,7 @@ _LLM_FLAT: dict[str, tuple[str, str]] = {
     "model": ("llm", "model"),
     "api_key": ("llm", "api_key"),
     "base_url": ("llm", "base_url"),
+    "agent_cmd": ("llm", "agent_cmd"),
     "openai_api": ("llm", "openai_api"),
     "reasoning_effort": ("llm", "reasoning_effort"),
     "reasoning_summary": ("llm", "reasoning_summary"),

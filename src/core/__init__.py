@@ -64,7 +64,7 @@ def resolve_backend(provider: str | None, openai_api: str | None, model: str | N
     """Collapse the (provider, openai_api) config onto one backend id.
 
     Returns one of: ``anthropic`` | ``anthropic-oauth`` | ``openai-oauth`` |
-    ``openai-responses`` | ``openai-chat`` | ``litellm``. ``provider="auto"``
+    ``openai-responses`` | ``openai-chat`` | ``litellm`` | ``process``. ``provider=\"auto\"``
     (the default) routes by model name:
     a ``claude*`` model on the default endpoint uses the native Anthropic
     backend (prompt caching); everything else uses litellm.
@@ -82,6 +82,8 @@ def resolve_backend(provider: str | None, openai_api: str | None, model: str | N
         return "openai-chat"
     if p == "litellm":
         return "litellm"
+    if p == "process":
+        return "process"
     if p == "openai":  # legacy two-axis form
         return "openai-chat" if (openai_api or "responses").lower() == "chat" else "openai-responses"
     if p == "auto":
@@ -151,6 +153,12 @@ def create_provider(config: AgentConfig) -> LLMProvider:
             base_url=config.base_url,
             max_retries=config.llm_provider_retries,
             timeout=config.llm_timeout,
+        )
+    if backend == "process":
+        from .llm.process_provider import ProcessProvider
+        return ProcessProvider(
+            agent_cmd=config.agent_cmd or "",
+            model=config.model,
         )
     # backend == "litellm": unified transport for the chat-completions family
     # (DeepSeek/Qwen/Gemini/OpenAI-compatible proxies). Reasoning chain is
