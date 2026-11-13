@@ -329,7 +329,9 @@ _FULL_REDACT_KEYS: frozenset[str] = frozenset({
 
 #: Keys holding a URL where only embedded credentials (``user:pass@``) are
 #: masked — the endpoint host/path stays visible for debugging.
-_URL_CREDENTIAL_KEYS: frozenset[str] = frozenset({"base_url"})
+#: ``agent_cmd`` is included because a user might embed a token as a flag
+#: (e.g. ``bridge --token sk-...``); the command path stays visible.
+_URL_CREDENTIAL_KEYS: frozenset[str] = frozenset({"base_url", "agent_cmd"})
 
 #: Every key that gets some form of masking (kept for introspection/tests).
 SENSITIVE_KEYS: frozenset[str] = _FULL_REDACT_KEYS | _URL_CREDENTIAL_KEYS
